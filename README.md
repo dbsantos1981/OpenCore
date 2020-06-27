@@ -79,5 +79,32 @@ Pode fechar o terminal com o MountEFI.
 
 ### 4.1 - Configurando a partição EFI
 
-xxx
+Baixe o [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg/releases/). Para configurar a estrutura de pastas do OpenCore, você deve pegar a pasta EFI encontrada nas versões do OpenCorePkg e copiá-la para a raiz da sua partição EFI. Nesse exemplo estou baixando a versão 0.5.9 (OpenCore-0.5.9-RELEASE.zip)
 
+![Screenshot](img/ConfigEFI1.png)
+---
+
+![Screenshot](img/ConfigEFI2.png)
+---
+
+No caso, vemos que ele vem com vários arquivos na pasta Drivers and Tools, conforme print abaixo:
+
+![Screenshot](img/ConfigEFI3.png)
+---
+
+Precisamos remover os arquivos que não são necessários agora. Deixe as pastas Drivers e Tools conforme o print abaixo, não mexa nas outras pastas:
+
+![Screenshot](img/ConfigEFI4.png)
+---
+
+Agora podemos colocar os drivers de firmware necessários (.efi) na pasta Drivers, e os Kexts / ACPI em suas respectivas pastas. Observe que os drivers UEFI do Clover não são suportados pelo OpenCore (EmuVariableUEFI, AptioMemoryFix, OsxAptioFixDrv, etc). Consulte a [conversão do driver de firmware Clover](https://github.com/dortania/OpenCore-Desktop-Guide/blob/master/clover-conversion/clover-efi.md) para obter mais informações sobre os drivers suportados e aqueles mesclados no OpenCore.
+
+Lembrando:
+
+- SSDTs e DSDTs(.aml) vão para a pasta ACPI
+- Kexts(.kext) vão para a pasta Kexts
+- Firmware drivers(.efi) vão para a pasta Drivers
+
+### 4.2 Baixando os kexts e EFIs necessários:
+
+Vá para [Gathering Files](https://dortania.github.io/OpenCore-Desktop-Guide/ktext.html) para obter os kexts e drivers de firmware necessários.
