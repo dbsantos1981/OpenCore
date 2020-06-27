@@ -1,6 +1,7 @@
 # Hackintosh com OpenCore
 ***Tentativa*** de criação de um **Guia de Instalação de um Hackintosh com OpenCore**
-Este texto é uma adaptação/tradução do texto que esta é 
+Este texto é uma adaptação/tradução do texto que está em https://dortania.github.io
+
 ## 1 - Verifique o seu Hardware
 
 Tente localizar seu hardware nas listas abaixo. No caso, vou escolher a versão do MacOs baseado no meu chipset de vídeo (para ter menos trabalho). Por exemplo, a minha placa de Vídeo é a Intel HD 3000 (*Legacy Intel*), então vou usar o HighSierra.
@@ -57,4 +58,26 @@ Cole o comando no terminal, digite sua senha, digite 'y' para confirmar. Ao fina
 
 ## 4 - Configurando o ambiente EFI do OpenCore
 
-dfdfdsf
+### 4.1 - Monte a partição EFI
+
+Para configurar o EFI do pendrive, precisamos montar a partição. Para isso vamos usar o programa [MountEFI](https://github.com/corpnewt/MountEFI). Acesse o link, baixe (clone) o projeto, e execute o programa **MountEFI.command**.
+
+![Screenshot](img/MountEFI1.png)
+---
+
+Ele listará os discos conectados, cabe a nós escolhermos o pendrive. No meu caso será a opção 2. 
+
+![Screenshot](img/MountEFI2.png)
+---
+
+Ele vai carregar a partição EFI. Nesse momento ela deve estar vazia ainda.
+
+![Screenshot](img/MountEFI3.png)
+---
+
+Pode fechar o terminal com o MountEFI.
+
+### 4.1 - Configurando a partição EFI
+
+xxx
+
