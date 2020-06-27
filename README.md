@@ -44,13 +44,17 @@ Agora, formataremos o pendrive para preparar o instalador do macOS e o OpenCore.
 
 Com o pendrive formatado, vamos executar um comando para transerir a imagem criada no passo anterior. Esse comando está na página de suporte da [Apple](https://support.apple.com/en-us/HT201372), escolha o comando adequado a versão que está instalando.
 
-Cole o comando no terminal, digite sua senha, digite 'y' para confirmar. Ao final, o pendrive terá o nome do sistema escolhido. Quando concluir, pode fechar o terminal. Esse comando demora para ser concluído, tenha paciência.
-
 ![Screenshot](img/CreateInstallMedia1.png)
 ---
+
+Cole o comando no terminal, digite sua senha, digite 'y' para confirmar. Ao final, o pendrive terá o nome do sistema escolhido. Quando concluir, pode fechar o terminal. Esse comando demora para ser concluído, tenha paciência.
+
 ![Screenshot](img/CreateInstallMedia2.png)
 ---
+
 ![Screenshot](img/CreateInstallMedia3.png)
 ---
 
+## 4 - Configurando o ambiente EFI do OpenCore
 
+dfdfdsf
