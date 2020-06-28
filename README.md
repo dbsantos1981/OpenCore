@@ -235,3 +235,22 @@ O [XHCI-unsupported](https://github.com/RehabMan/OS-X-USB-Inject-All) é necess�
 
 **Wi-fi e Bluetooth**
 
+- AirportBrcmFixup
+
+O [AirportBrcmFixup](https://github.com/acidanthera/AirportBrcmFixup/releases) é usado para corrigir placas Broadcom que não sejam da Apple, ele não funcionará na Intel, Killer, Realtek, etc.
+
+- BrcmPatchRAM
+
+O [BrcmPatchRAM](https://github.com/acidanthera/BrcmPatchRAM/releases) é usado para fazer upload de firmware no chipset Broadcom Bluetooth, necessário para todas as placas que não sejam da Apple / Fenvi Airport. Deve ser usado em conjunto com o BrcmFirmwareData.kext.
+
+  - BrcmPatchRAM3 para 10.14+ (em conjunto com BrcmBluetoothInjector)
+  - BrcmPatchRAM2 para 10.11-10.14
+  - BrcmPatchRAM para 10.10 ou mais antigo
+  
+A ordem no Kernel -> Adicionar deve ser:
+
+1. BrcmBluetoothInjector
+2. BrcmFirmwareData
+3. BrcmPatchRAM3
+
+AMD CPU Specific kexts:
