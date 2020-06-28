@@ -560,3 +560,25 @@ E o USBX? Para Skylake e mais recentes, além da AMD, você pode pegar um prebui
 Nota sobre solução de problemas: consulte [Solução de problemas](https://dortania.github.io/OpenCore-Desktop-Guide/troubleshooting/troubleshooting.html) gerais, se você estiver tendo problemas ao executar SSDTTime.
 
 #### 4.3.2.3 Adicionando ao OpenCore
+
+Não esqueça que os SSDTs precisam ser adicionados ao Opencore, lembrando de que .aml é um arquivo compilado, enquanto que .dsl é código. Adicione apenas o arquivo .aml:
+
+- EFI/OC/ACPI
+- config.plist -> ACPI -> Add
+
+Lembre-se de que Cmd / Crtl + R com o OwnTree apontado para sua pasta OC adicionará todos os seus SSDTs, kexts e drivers .efi à configuração para você. Não adicione seu DSDT ao OpenCore, ele já está no seu firmware. Se você não tiver certeza do que isso se refere, volte ao guia OpenCore e selecione sua configuração com base na arquitetura da sua CPU.
+
+Para aqueles que ainda não possuem um config.plist, convém voltar para os respectivos guias do OpenCore e criar o config.plist:
+
+- Guia do OpenCore Desktop
+- Guia do laptop OpenCore
+
+Os usuários do FixHPET também precisarão mesclar oc_patches.plist em seu config.plist. Para fazer isso:
+
+- Abra os dois arquivos
+- Exclua a seção ACPI -> Patch do config.plist
+- Copie a seção ACPI -> Patch de patches.plist
+- Cole onde os patches antigos estavam no config.plist
+
+long way
+
