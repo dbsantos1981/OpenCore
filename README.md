@@ -122,7 +122,7 @@ Necessário para ver volumes HFS (ou seja, partições / imagens do macOS Instal
 
 - **OpenRuntime.efi**
 
-Substituição do [AptioMemoryFix.efi[(https://github.com/acidanthera/AptioFixPkg), usada como uma extensão do OpenCore para ajudar a corrigir o boot.efi das correções da NVRAM e melhorar o gerenciamento de memória.
+Substituição do [AptioMemoryFix.efi](https://github.com/acidanthera/AptioFixPkg), usada como uma extensão do OpenCore para ajudar a corrigir o boot.efi das correções da NVRAM e melhorar o gerenciamento de memória.
 
 ***Para usuários de hardware mais antigo***
 
@@ -143,4 +143,76 @@ Usado para Sandy Bridge e versões mais antigas quando nenhum driver XHCI está 
 Variante herdada do HfsPlus, usada para sistemas que não possuem suporte à instrução RDRAND. Isso geralmente é visto na Sandy Bridge e em versões mais antigas. Para obter uma lista completa dos drivers compatíveis, consulte o item 11.2 na [Documentação em PDF do OpenCorePkg](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Configuration.pdf).
 
 **Esses arquivos devem ser gravados na pasta Drivers da sua partição EFI.**
+
+#### 4.2.2 Kexts
+
+Um kext é uma extensão do kernel. Você pode pensar no kext como um driver para o macOS. Esses arquivos irão para a pasta Kexts na sua EFI.
+
+***Nota do Windows e Linux:***
+
+Kexts se parecerá com pastas normais no seu sistema operacional, verifique se a pasta que você está instalando tem uma extensão .kext visível (e não a adicione manualmente, se estiver faltando). Todos os kext listados abaixo podem ser encontrados pré-compilados no [Repositório Kext](https://onedrive.live.com/?authkey=%21APjCyRpzoAKp4xs&id=FE4038DA929BFB23%21455036&cid=FE4038DA929BFB23). Kexts aqui são compilados toda vez que há um novo commit.
+
+**Kexts Obrigatórias**
+
+- VirtualSMC
+
+Emula o chip SMC encontrado em macs reais, sem esse kext seu Hackintosh não inicializa. Uma alternativa ao VirtualSMC é o FakeSMC, que pode ter suporte melhor ou pior. Ele é comumente usado em hardware legado.
+
+- Lilu
+
+Um kext para corrigir muitos processos, necessário para AppleALC, WhateverGreen, VirtualSMC e muitos outros kexts. Sem o Lilu, eles não vão funcionar.
+
+**VirtualSMC Plugins**
+
+- SMCProcessor.kext
+
+Usado para monitorar a temperatura da CPU, não funciona em sistemas baseados em CPU AMD
+
+- SMCSuperIO.kext
+
+Usado para monitorar a velocidade do cooler, não funciona em sistemas baseados em CPU AMD
+
+- SMCLightSensor.kext
+
+Usado para o sensor de luz ambiente em laptops, quem usa desktops não precisa utilizar. Se seu notebook não tem esse sensor, também não use.
+
+- SMCBatteryManager.kext
+
+Usado para medir as leituras de bateria em laptops, quem usa desktops não precisa utilizar. Se você usa seu notebook sem bateria, também não use.
+
+**Placa de Vídeo**
+
+- WhateverGreen
+
+Usado para correção de gráficos DRM, boardID, correções de buffer de quadros etc., todas as GPUs se beneficiam desse kext. Observe que o arquivo *SSDT-PNLF.dsl* incluído é necessário apenas para laptops e computadores All-In-One. Consulte [Introdução à ACPI](https://dortania.github.io/Getting-Started-With-ACPI/) para obter mais informações.
+
+**Placa de Som**
+
+- AppleALC
+
+O kext [AppleALC](https://github.com/acidanthera/AppleALC/releases) é usado para patch AppleHDA, usado para fornecer áudio integrado. A AMD 15h/16h pode ter problemas com esse kext e os sistemas Ryzen/Threadripper raramente têm suporte para microfone.
+
+**Placa de Rede Ethernet**
+
+- IntelMausi
+
+O kext [IntelMausi](https://github.com/acidanthera/IntelMausi/releases) é necessário para placas de rede Intel. Se sua placa usa os chipsets baseados no I211, você precisará do kext SmallTreeIntel82576.
+
+- SmallTreeIntel82576
+
+O kext [SmallTreeIntel82576](https://github.com/khronokernel/SmallTree-I211-AT-patch/releases) é necessário para as placas de rede Intel I211, baseadas no kext SmallTree (mas corrigidas para oferecer suporte à I211), necessário para a maioria das placas AMD que usam placas de rede Intel.
+
+- AtherosE2200Ethernet
+
+O kext [AtherosE2200Ethernet](https://github.com/Mieze/AtherosE2200Ethernet/releases) é necessário para as placas de rede Atheros e Killer
+
+- RealtekRTL8111
+
+O kext [RealtekRTL8111](https://github.com/Mieze/RTL8111_driver_for_OS_X/releases) é necessário para placas Gigabit Ethernet da Realtek
+
+- LucyRTL8125Ethernet
+
+O kext [LucyRTL8125Ethernet](https://github.com/Mieze/LucyRTL8125Ethernet) é necessário para placas Ethernet de 2,5 Gb da Realtek
+
+**USB**
 
