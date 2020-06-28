@@ -1,6 +1,13 @@
 # Hackintosh com OpenCore
 ***Tentativa*** de criação de um **Guia de Instalação de um Hackintosh com OpenCore**
-Este texto é uma adaptação/tradução do texto que está em https://dortania.github.io
+
+Este texto é uma adaptação/tradução livre dos textos que estão em https://dortania.github.io
+
+---
+**NÃO TEMOS RESPONSABILIDADE NENHUMA POR QUALQUER DANO OU POR QUALQUER PERDA DE DADOS QUE POSSAM OCORRER AO SEGUIR ESTES PROCEDIMENTOS. FAÇA-O POR SUA PRÓPRIA CONTA E RISCO. SE NÃO SE SENTE CAPAZ, PROCURE AJUDA. NÃO INICIE O PROCESSO ANTES DE LER TODO ESTE DOCUMENTO.**
+
+**É OBRIGATÓRIO CONHECER AS INFORMAÇÕES SOBRE SEU HARDWARE, SEM ELAS ESSE PROCEDIMENTO NÃO FAZ SENTIDO**
+---
 
 ## 1 - Verifique o seu Hardware
 
@@ -458,7 +465,6 @@ Usado para ativar os recursos que são exclusivos do Windows no macOS, observe q
 Observe que você precisará adicioná-lo ao seu config.plist em *ACPI -> Patch*:
 
 Comment	| String	| Change _OSI to XOSI
-:---:|:---:|:---|
 Enabled | Boolean | YES
 Count	| Number	| 0
 Limit	| Number	| 0
@@ -467,9 +473,44 @@ Replace	| Data| 584f5349
 
 **Backlight**
 
+Para laptops e desktops do tipo *all-in-one*, isso corrige o suporte a controle de brilho.
+
+[SSDT-PNLF](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PNLF.aml) -> Para KabyLake e anteriores.
+
+[SSDT-PNLF-CFL](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PNLF-CFL.aml) -> Para Coffee Lake e mais recentes.
+
 **System Clock(AWAC)**
 
+Necessário para sistemas mais novos que executam relógios de sistema baseados em AWAC, principalmente relevantes para o Z390 e mais recente (Gigabyte e AsRock, no entanto, o suportaram no Z370 com uma atualização do BIOS).
+
+- [SSDT-AWAC](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-AWAC.aml)
+
+O maior problema desse prebuilt é que estamos supondo que os dois tenham um relógio AWAC e que ele possa ser desativado. É altamente recomendável que você faça um você mesmo para saber realmente se ambos precisam disso e se vai funcionar: [AWAC vs RTC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/awac.html)
+
 **NVRAM(PMC)**
+
+Necessário para trazer de volta o suporte NVRAM para Z390 e mais recente, NÃO USE NO Z370 ou mais antigo.
+
+Nota: As desktop boards Z490 parecem não precisar disso, mas se você estiver com problemas de NVRAM, poderá tentar este SSDT.
+
+[SSDT-PMC](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PMC.aml)
+
+Lembre-se de que apenas estas placas precisam desse SSDT:
+
+1. B360
+2. B365
+3. H310
+4. H370
+5. Z390
+6. 400 series (Comet Lake)
+7. 495 series (Icelake)
+
+**USB(RHUB)**
+
+Necessárioi para a 10ª geração de CPUs. Placas Gigabyte and AsRock não precisam dele
+
+[SSDT-RHUB.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-RHUB.aml)
+
 
 
 
