@@ -118,7 +118,7 @@ Estes são os drivers usados pelo OpenCore, para a maioria dos sistemas, você s
 
 - **HfsPlus.efi**
 
-Necessário para ver volumes HFS (ou seja, partições / imagens do macOS Installers and Recovery). Não misture outros drivers HFS
+O [HfsPlus.efi](https://github.com/acidanthera/OcBinaryData/blob/master/Drivers/HfsPlus.efi) é necessário para ver volumes HFS (ou seja, partições/imagens do instalador do macOS ou partições Recovery). Não misture ele com outros drivers HFS.
 
 - **OpenRuntime.efi**
 
@@ -128,19 +128,19 @@ Substituição do [AptioMemoryFix.efi](https://github.com/acidanthera/AptioFixPk
 
 - **OpenUsbKbDxe.efi**
 
-Usado para o seletor OpenCore em sistemas legados executando o DuetPkg, não recomendado e até prejudicial para UEFI (Ivy Bridge e mais recente)
+O [OpenUsbKbDxe.efi](https://github.com/acidanthera/OpenCorePkg/releases) é usado para o seletor OpenCore em sistemas legados executando o DuetPkg, não recomendado e até prejudicial para UEFI (Ivy Bridge e mais recente)
 
 - **NvmExpressDxe.efi**
 
-Usado para Haswell e versões mais antigas quando nenhum driver NVMe está embutido no firmware, não é necessário se você não estiver usando uma unidade NVMe
+O [NvmExpressDxe.efi](https://github.com/acidanthera/OpenCorePkg/releases) é usado para Haswell e versões mais antigas quando nenhum driver NVMe está embutido no firmware, não é necessário se você não estiver usando uma unidade NVMe
 
 - **XhciDxe.efi**
 
-Usado para Sandy Bridge e versões mais antigas quando nenhum driver XHCI está embutido no firmware, não é necessário se você não estiver usando uma placa de expansão USB 3.0
+O [XhciDxe.efi](https://github.com/acidanthera/OpenCorePkg/releases) é sado para Sandy Bridge e versões mais antigas quando nenhum driver XHCI está embutido no firmware, não é necessário se você não estiver usando uma placa de expansão USB 3.0
 
 - **HfsPlusLegacy.efi**
 
-Variante herdada do HfsPlus, usada para sistemas que não possuem suporte à instrução RDRAND. Isso geralmente é visto na Sandy Bridge e em versões mais antigas. Para obter uma lista completa dos drivers compatíveis, consulte o item 11.2 na [Documentação em PDF do OpenCorePkg](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Configuration.pdf).
+O [HfsPlusLegacy.efi](https://github.com/acidanthera/OcBinaryData/blob/master/Drivers/HfsPlusLegacy.efi) é uma variante herdada do HfsPlus, usada para sistemas que não possuem suporte à instrução RDRAND. Isso geralmente é visto na Sandy Bridge e em versões mais antigas. Para obter uma lista completa dos drivers compatíveis, consulte o item 11.2 na [Documentação em PDF do OpenCorePkg](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Configuration.pdf).
 
 **Esses arquivos devem ser gravados na pasta Drivers da sua partição EFI.**
 
@@ -156,11 +156,11 @@ Kexts se parecerá com pastas normais no seu sistema operacional, verifique se a
 
 - VirtualSMC
 
-Emula o chip SMC encontrado em macs reais, sem esse kext seu Hackintosh não inicializa. Uma alternativa ao VirtualSMC é o FakeSMC, que pode ter suporte melhor ou pior. Ele é comumente usado em hardware legado.
+O kext [VirtualSMC](https://github.com/acidanthera/VirtualSMC/releases) emula o chip SMC encontrado em macs reais, sem esse kext seu Hackintosh não inicializa. Uma alternativa ao VirtualSMC é o FakeSMC, que pode ter suporte melhor ou pior. Ele é comumente usado em hardware legado.
 
 - Lilu
 
-Um kext para corrigir muitos processos, necessário para AppleALC, WhateverGreen, VirtualSMC e muitos outros kexts. Sem o Lilu, eles não vão funcionar.
+O kext [Lilu](https://github.com/vit9696/Lilu/releases) é um kext usado para corrigir muitos processos, necessário para AppleALC, WhateverGreen, VirtualSMC e muitos outros kexts. Sem o Lilu, eles não vão funcionar.
 
 **VirtualSMC Plugins**
 
@@ -184,7 +184,7 @@ Usado para medir as leituras de bateria em laptops, quem usa desktops não preci
 
 - WhateverGreen
 
-Usado para correção de gráficos DRM, boardID, correções de buffer de quadros etc., todas as GPUs se beneficiam desse kext. Observe que o arquivo *SSDT-PNLF.dsl* incluído é necessário apenas para laptops e computadores All-In-One. Consulte [Introdução à ACPI](https://dortania.github.io/Getting-Started-With-ACPI/) para obter mais informações.
+O kext [WhateverGreen](https://github.com/acidanthera/WhateverGreen/releases)Usado para correção de gráficos DRM, boardID, correções de buffer de quadros etc., todas as GPUs se beneficiam desse kext. Observe que o arquivo *SSDT-PNLF.dsl* incluído é necessário apenas para laptops e computadores All-In-One. Consulte [Introdução à ACPI](https://dortania.github.io/Getting-Started-With-ACPI/) para obter mais informações.
 
 **Placa de Som**
 
