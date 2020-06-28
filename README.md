@@ -397,4 +397,79 @@ CometLake  | [SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Un
 IceLake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|[SSDT-PNLF-CFL](https://dortania.github.io/Getting-Started-With-ACPI/Laptops/backlight.html)|[SSDT-GPI0](https://dortania.github.io/Getting-Started-With-ACPI/Laptops/trackpad.html)| [SSDT-AWAC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/awac.html)|	[SSDT-RHUB](https://dortania.github.io/Getting-Started-With-ACPI/Universal/rhub.html)	| N/A |
 ---
 
-#### 4.3.2 Criação de SSDT
+#### 4.3.2 Como criar as SSDTs
+
+A criação de SSDTs se enquadra principalmente em 3 campos:
+
+- Pre-Built SSDTs (pré-construídos) - Eles funcionam, mas não são perfeitos.
+- Automated Tools (Ferramentas automatizadas) - Visto principalmente com o SSDTTime, funciona muito melhor, embora não possa cobrir todas as situações.
+- Manually (Criando-os manualmente) - Sempre funcionará, será muito mais limpo e você aprenderá sobre o processo.
+
+#### 4.3.2.1 Pre-Built SSDTs
+
+- Power Management
+- Embedded Controllers
+- Trackpad
+- Backlight
+- System Clock(AWAC)
+- NVRAM(PMC)
+
+Essa seção é principalmente para usuários que estão tendo problemas para compilar, descompilar ou mesmo para ter a compreensão geral do processo da ACPI. Os principais motivos para você evitar os *prebuilts* são os seguintes:
+
+- Processo de boot muito lento
+  - Principalmente porque esses SSDTs precisam passar por todos os caminhos possíveis
+  - Curiosidade: o SSDT-EC-DESKTOP pré-construído é 42 vezes maior do que criar o arquivo você mesmo 
+- Nem sempre funcionam
+  - Os SSDTs fornecidos podem lidar apenas com tantas situações, e alguns podem de fato não funcionar
+  - Visto principalmente com o SSDT-AWAC, pois pressupõe que há uma maneira de o RTC ser facilmente ativado
+- Você não aprende nada assim
+  - Esse é o maior problema, pois você não tem idéia real de como solucionar problemas ou como tornar esses arquivos mais avançados.
+  
+**Power Management**
+
+Para Haswell e mais recentes: [SSDT-PLUG-DRTNIA](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PLUG-DRTNIA.aml)
+
+Para Ivy Bridge e versões mais antigas, consulte a página [Otimizando o gerenciamento de energia](https://dortania.github.io/OpenCore-Desktop-Guide/post-install/pm.html). Isso será feito após a instalação. 
+
+Os usuários de CPU AMD não precisam de SSDTs para gerenciamento de energia.
+
+**Embedded Controllers**
+
+**Desktops**
+
+- [SSDT-EC-USBX-DESKTOP](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-EC-USBX-DESKTOP.aml) -> Para Skylake e mais recentes, e também todos os sistemas da AMD.
+
+- [SSDT-EC-DESKTOP](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-EC-DESKTOP.aml) -> Para Broadwell e mais antigos.
+
+**Laptops**
+
+- [SSDT-EC-USBX-LAPTOP](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-EC-USBX-LAPTOP.aml) -> Para Skylake e mais recentes.
+
+- [SSDT-EC-LAPTOP](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-EC-LAPTOP.aml) -> Para Broadwell e mais antigos.
+
+**Trackpad**
+
+Usado para ativar os recursos que são exclusivos do Windows no macOS, observe que os patches abaixo provavelmente interromperão a inicialização do Windows via OpenCore. É altamente recomendável que você faça um você mesmo para evitar problemas futuros abaixo da linha [Trackpad GPI0](https://dortania.github.io/Getting-Started-With-ACPI/Laptops/trackpad.html)
+
+- [SSDT-XOSI](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-XOSI.aml)
+
+- [XOSI-Rename.plist](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/XOSI-Rename.plist)
+
+Observe que você precisará adicioná-lo ao seu config.plist em *ACPI -> Patch*:
+
+Comment	| String	| Change _OSI to XOSI
+:---:|:---:|:---|
+Enabled | Boolean | YES
+Count	| Number	| 0
+Limit	| Number	| 0
+Find	| Data	| 5f4f5349
+Replace	| Data| 584f5349
+
+**Backlight**
+
+**System Clock(AWAC)**
+
+**NVRAM(PMC)**
+
+
+
