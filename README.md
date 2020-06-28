@@ -378,9 +378,23 @@ Skylake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Univers
 Skylake-X|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
 KabyLake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
 CoffeeLake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|[SSDT-AWAC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/awac.html)|[SSDT-PMC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/nvram.html)|N/A|
-CometLake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)||[SSDT-AWAC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/awac.html)|[SSDT-PMC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/nvram.html)|[SSDT-RHUB](https://dortania.github.io/Getting-Started-With-ACPI/Universal/rhub.html)|
+CometLake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|[SSDT-AWAC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/awac.html)|[SSDT-PMC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/nvram.html)|[SSDT-RHUB](https://dortania.github.io/Getting-Started-With-ACPI/Universal/rhub.html)|
 AMD (15/16/17h)|N/A|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
 
 - Laptop
+
+Plataforma | CPU	| EC | Backlight | I2C TrackPad | AWAC | USB | IRQ |
+:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+Ivy Bridge | [CPU-PM](https://dortania.github.io/OpenCore-Desktop-Guide/post-install/pm.html#sandy-and-ivy-bridge-power-management) (Rodar após a Instalação)	| [SSDT-EC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)	| [SSDT-PNLF](https://dortania.github.io/Getting-Started-With-ACPI/Laptops/backlight.html)	| [SSDT-GPI0](https://dortania.github.io/Getting-Started-With-ACPI/Laptops/trackpad.html)	| N/A |	N/A	| [IRQ SSDT](https://dortania.github.io/Getting-Started-With-ACPI/Universal/irq.html) |
+Haswell    | CPU-PM (Run in Post-Install)	| SSDT-EC	| SSDT-PNLF	| SSDT-GPI0	| N/A |	N/A	| IRQ SSDT |
+Broadwell  | CPU-PM (Run in Post-Install)	| SSDT-EC	| SSDT-PNLF	| SSDT-GPI0	| N/A |	N/A	| IRQ SSDT |
+Skylake    | CPU-PM (Run in Post-Install)	| SSDT-EC	| SSDT-PNLF	| SSDT-GPI0	| N/A |	N/A	| IRQ SSDT |
+KabyLake   | CPU-PM (Run in Post-Install)	| SSDT-EC	| SSDT-PNLF	| SSDT-GPI0	| N/A |	N/A	| IRQ SSDT |
+CoffeeLake (8th Gen) | CPU-PM (Run in Post-Install)	| SSDT-EC	| SSDT-PNLF	| SSDT-GPI0	| N/A |	N/A	| IRQ SSDT |
+CoffeeLake (9th Gen) | CPU-PM (Run in Post-Install)	| SSDT-EC	| SSDT-PNLF	| SSDT-GPI0	| N/A |	N/A	| IRQ SSDT |
+CometLake  | CPU-PM (Run in Post-Install)	| SSDT-EC	| SSDT-PNLF	| SSDT-GPI0	| N/A |	N/A	| IRQ SSDT |
+IceLake    | CPU-PM (Run in Post-Install)	| SSDT-EC	| SSDT-PNLF	| SSDT-GPI0	| N/A |	N/A	| IRQ SSDT |
+
+
 
 #### 4.3.2 Criação de SSDT
