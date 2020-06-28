@@ -146,7 +146,7 @@ O [HfsPlusLegacy.efi](https://github.com/acidanthera/OcBinaryData/blob/master/Dr
 
 #### 4.2.2 Kexts
 
-Um kext é uma extensão do kernel. Você pode pensar no kext como um driver para o macOS. Esses arquivos devem ir para a pasta Kexts na sua EFI. Verifique quais deles voê realmente precisa, de acordo com o seu hardware. Por isso que é ***imperativo conhecer bem o seu hardware***.
+Um kext é uma extensão do kernel. Você pode pensar no kext como um driver para o macOS. Esses arquivos devem ir para a pasta Kexts na sua EFI. Verifique quais deles voê realmente precisa, de acordo com o seu hardware. Por isso que é ***imperativo conhecer bem o seu hardware***. Consulte o [Kexts.md](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Kexts.md) para obter uma lista completa dos kexts suportados.
 
 ***Nota do Windows e Linux:***
 
@@ -253,4 +253,68 @@ A ordem no Kernel -> Adicionar deve ser:
 2. BrcmFirmwareData
 3. BrcmPatchRAM3
 
-AMD CPU Specific kexts:
+**Kexts específicos para CPUs AMD**
+
+- Gerenciamento de Energia
+
+Há uma solução melhor que o *NullCPUPowerManagment*, conhecida como **DummyPowerManagement**, encontrada em Kernel -> Quirks no config.plist. Isso será abordado em um outro momento.
+
+- XLNCUSBFIX
+
+O [XLNCUSBFIX](https://cdn.discordapp.com/attachments/566705665616117760/566728101292408877/XLNCUSBFix.kext.zip) é um fix para USB em sistemas AMD FX, não é recomendada para Ryzen.
+
+- VoodooHDA
+
+O [VoodooHDA](https://sourceforge.net/projects/voodoohda/) é usado em sistemas FX e o suporte Mic + Audio do painel frontal para o sistema Ryzen, não pode ser usado em conjunto com o AppleALC. A qualidade do áudio é notavelmente pior que a AppleALC nos processadores Zen.
+
+**Extras**
+
+- AppleMCEReporterDisabler
+
+O [AppleMCEReporterDisabler](https://github.com/acidanthera/bugtracker/files/3703498/AppleMCEReporterDisabler.kext.zip) útil iniciando o sistema do Catalina para desativar o AppleMCEReporter kext, o que causará kernel panic em CPUs AMD e sistemas de soquete duplo. SMBIOS afetados:
+
+1. MacPro6,1
+2. MacPro7,1
+3. iMacPro1,1
+
+- VoodooTSCSync
+
+O [VoodooTSCSync](https://bitbucket.org/RehabMan/VoodooTSCSync/downloads/) é necessário para sincronizar o TSC em algumas das placas-mãe Intel HEDT e placas Intel de Servidores. Sem ele o macOS pode ficar extremamente lento ou até mesmo nem inicializar. Skylake-X deve usar  [TSCAdjustReset](https://github.com/interferenc/TSCAdjustReset).
+
+- TSCAdjustReset
+
+No Skylake-X, muitos firmwares, incluindo Asus e EVGA, não gravam o TSC em todos os núcleos. Portanto, precisaremos redefinir o TSC num cold boot e inicializar novamente. A versão compilada pode ser encontrada aqui [TSCAdjustReset.kext](https://github.com/dortania/OpenCore-Desktop-Guide/blob/master/extra-files/TSCAdjustReset.kext.zip). Observe que você deve abrir o kext (ShowPackageContents no localizador, Conteúdo -> Info.plist) e alterar o Info.plist -> IOKitPersonalities -> IOPropertyMatch -> IOCPUNumber para o número de threads de CPU que você possui a partir de 0 (i9 7980xe 18 núcleo seria 35, pois possui um total de 36 threads).
+
+- NVMeFix
+
+O [NVMeFix](https://github.com/acidanthera/NVMeFix/releases) deve ser usado para corrigir o gerenciamento de energia e a inicialização em um NVMe que não seja da Apple, requer o macOS 10.14 ou mais recente.
+
+**Kexts específicos para laptop**
+
+- VoodooPS2
+
+O [VoodooPS2](https://github.com/acidanthera/VoodooPS2/releases) é necessário para sistemas com teclados e trackpads PS2. Os usuários do trackpad devem usá-lo em conjunto com o [VoodooInput](https://github.com/acidanthera/VoodooInput/releases) (deve ser incluído antes do VoodooPS2 em seu config.plist)
+
+- VoodooI2C
+
+O [VoodooI2C](https://github.com/alexandred/VoodooI2C/releases) é usado para corrigir dispositivos I2C, encontrados em alguns touchpads e máquinas de tela sensível ao toque mais sofisticados. Devem ser usados em conjunto com um desses plugins:
+
+1. VoodooI2CHID - Implementa a especificação do dispositivo Microsoft HID.
+2. VoodooI2CElan - Implementa suporte para dispositivos proprietários da Elan. (não funciona no ELAN1200 +, use o HID)
+3. VoodooI2CSynaptics - Implementa o suporte aos dispositivos proprietários da Synaptic.
+4. VoodooI2CFTE - Implementa o suporte ao touchpad FTE1001.
+5. VoodooI2CUPDDEngine - Implementa o suporte ao driver Touchbase.
+
+Para descobrir que tipo de teclado e trackpad você possui, verifique o Gerenciador de dispositivos no Windows ou a entrada `dmesg | grep` no Linux.
+
+- NoTouchID
+
+O [NoTouchID](https://github.com/al3xtjames/NoTouchID/releases) é recomendado para SMBIOS que incluem um sensor TouchID para corrigir problemas de autenticação.
+
+#### 4.2.3 SSDTs
+
+So you see all those SSDTs in the AcpiSamples folder and wonder whether you need any of them. For us, we will be going over what SSDTs you need in your specific ACPI section of the config.plist, as the SSDTs you need are platform specific. With some even system specific where they need to be configured and you can easily get lost if I give you a list of SSDTs to choose from now.
+
+Getting started with ACPI has an extended section on SSDTs including compiling them on different platforms.
+
+A quick TL;DR of needed SSDTs(This is source code, you will have to compile them into a .aml file):
