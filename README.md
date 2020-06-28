@@ -311,10 +311,76 @@ Para descobrir que tipo de teclado e trackpad você possui, verifique o Gerencia
 
 O [NoTouchID](https://github.com/al3xtjames/NoTouchID/releases) é recomendado para SMBIOS que incluem um sensor TouchID para corrigir problemas de autenticação.
 
-#### 4.2.3 SSDTs
+### 4.3 SSDTs e ACPI
 
-So you see all those SSDTs in the AcpiSamples folder and wonder whether you need any of them. For us, we will be going over what SSDTs you need in your specific ACPI section of the config.plist, as the SSDTs you need are platform specific. With some even system specific where they need to be configured and you can easily get lost if I give you a list of SSDTs to choose from now.
+Então você vê todos esses SSDTs na pasta *AcpiSamples* e se pergunta se precisa de algum deles. Na seção *ACPI* do config.plist veremos quais SSDTs nós precisamos, pois eles são específicos para cada plataforma. A [introdução ao ACPI](https://dortania.github.io/Getting-Started-With-ACPI) possui uma seção estendida sobre SSDTs, incluindo a compilação em diferentes plataformas.
 
-Getting started with ACPI has an extended section on SSDTs including compiling them on different platforms.
+Caso seu sistema seja **IvyBridge** ou **IvyBridge-E** execute este [script](https://github.com/Piker-Alpha/ssdtPRGen.sh) após a instalação do Hackintosh.
 
-A quick TL;DR of needed SSDTs(This is source code, you will have to compile them into a .aml file):
+***Um rápida explicação sobre a ACPI***
+
+Então, o que são DSDTs e SSDTs? Bem, estas são tabelas presentes no firmware que descrevem dispositivos de hardware como controladores USB, threads de CPU, controladores incorporados, relógios do sistema e outros. Uma DSDT (Tabela de descrição diferenciada do sistema) pode ser vista como o corpo que mantém a maioria das informações, com bits menores de informações sendo transmitidos pelo SSDT (Tabela de descrição do sistema secundário). Você pode pensar no DSDT como os projetos de construção, com os SSDTs sendo notas adesivas que descrevem detalhes adicionais ao projeto.
+
+Você pode ler mais sobre a ACPI e suas especificações no [Manual da ACPI 6.3](https://uefi.org/sites/default/files/resources/ACPI_6_3_May16.pdf)
+
+Então, por que nos preocupamos com essas tabelas? O macOS pode ser muito exigente quanto aos dispositivos presentes no DSDT e, portanto, nosso trabalho é corrigí-lo. Os principais dispositivos que precisam ser corrigidos para que o macOS funcione corretamente são:
+
+1. Embedded controllers(EC)
+
+Todas as máquinas intel semi-modernas têm um EC (geralmente chamado H_EC, ECDV, EC0, etc ...) exposto em seu DSDT, e muitos sistemas AMD também tem isso. Esses controladores geralmente não são compatíveis com o macOS e podem causar kernel panic; portanto, eles precisam estar ocultos no macOS. O macOS Catalina exige que um dispositivo chamado EC esteja presente, nesse caso, um EC fictício é criado.
+
+Nos laptops, o controlador incorporado real ainda precisa estar ativado para que a bateria e as teclas de atalho funcionem, e renomear o EC pode causar problemas adicionais com o Windows, portanto, é preferível criar um EC falso sem desativar o controlador incorporado real.
+
+2. Plugin Type
+
+Isso permite o uso do XCPM, que fornece gerenciamento de energia da CPU nativa na Intel Haswell e em CPUs mais recentes, o SSDT se conectará ao primeiro segmento da CPU. Não destinado a CPUs AMD.
+
+3. AWAC system clock
+
+Isso se aplica a todas as placas-mãe da série 300, incluindo muitas placas Z370, o problema específico é que as placas mais recentes são fornecidas com o relógio AWAC ativado. Esse é um problema porque o macOS não pode se comunicar com os relógios AWAC, portanto, é necessário forçar o relógio RTC herdado ou, se indisponível, criar um falso para o macOS usar.
+
+4. NVRAM SSDT
+
+As verdadeiras placas-mãe da série 300 (não Z370) não declaram o chip FW como MMIO na ACPI e, portanto, o kernel ignora a região MMIO declarada pelo mapa de memória UEFI. Este SSDT traz de volta o suporte NVRAM.
+
+5. Backlight SSDT
+
+Usado para corrigir o suporte ao controle de luz de fundo em laptops.
+
+6. GPIO SSDT
+
+Usado para criar um esboço para permitir a conexão do VoodooI2C, apenas para laptops.
+
+7. XOSI SSDT
+
+Usado para redirecionar chamadas OSI para esse SSDT, usado principalmente para enganar nosso hardware (faaz ele pensar que está inicializando o Windows) para obter um melhor suporte ao trackpad. Caso ele interrompa a inicialização do Windows, use o GPIO SSDT. O uso do XOSI não será abordado neste guia.
+
+8. Patches IRQ SSDT e ACPI
+
+Necessário para corrigir conflitos de IRQ no DSDT, principalmente para laptops. Exclusivo no caso do SSDTTime. Nota: *Skylake e sistemas mais novos raramente têm conflitos de IRQ, isso é predominante principalmente em Broadwell e em sistemas mais antigos*.
+
+Agora vá para a próxima sessão, para saber quais SSDTs seu sistema precisa.
+
+#### 4.3.1 Escolhendo os SSDTs - De qual SSDT seu hardware precisa?
+
+Por favor, veja a seção ACPI específica do seu config.plist, todos os SSDTs necessários tem uma breve explanação. Abaixo temos um resumo:
+
+- Desktop
+
+Plataforma | CPU	| EC | AWAC |	NVRAM	| USB
+:---:|:---:|:---:|:---:|:---:|:---:|
+Ivy Bridge|[CPU-PM](https://dortania.github.io/OpenCore-Desktop-Guide/post-install/pm.html#sandy-and-ivy-bridge-power-management) (Rodar após a Instalação)|[SSDT-EC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
+Ivy Bridge-E|[CPU-PM](https://dortania.github.io/OpenCore-Desktop-Guide/post-install/pm.html#sandy-and-ivy-bridge-power-management) (Rodar após a Instalação)|[SSDT-EC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
+Haswell/Broadwell|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
+Haswell-E|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
+Broadwell-E|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
+Skylake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
+Skylake-X|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
+KabyLake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
+CoffeeLake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|[SSDT-AWAC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/awac.html)|[SSDT-PMC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/nvram.html)|N/A|
+CometLake|[SSDT-PLUG](https://dortania.github.io/Getting-Started-With-ACPI/Universal/plug.html)|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)||[SSDT-AWAC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/awac.html)|[SSDT-PMC](https://dortania.github.io/Getting-Started-With-ACPI/Universal/nvram.html)|[SSDT-RHUB](https://dortania.github.io/Getting-Started-With-ACPI/Universal/rhub.html)|
+AMD (15/16/17h)|N/A|[SSDT-EC-USBX](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)|N/A|N/A|N/A|
+
+- Laptop
+
+#### 4.3.2 Criação de SSDT
