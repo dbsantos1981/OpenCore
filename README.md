@@ -4,8 +4,9 @@ Este texto é uma adaptação/tradução do texto que está em https://dortania.
 
 ## 1 - Verifique o seu Hardware
 
-Tente localizar seu hardware nas listas abaixo. No caso, vou escolher a versão do MacOs baseado no meu chipset de vídeo (para ter menos trabalho). Por exemplo, a minha placa de Vídeo é a Intel HD 3000 (*Legacy Intel*), então vou usar o HighSierra.
+Tente localizar seu hardware nas listas abaixo e/ou entenda como é que funciona a coisa. No caso, vou escolher a versão do MacOs baseado no meu chipset de vídeo (para ter menos trabalho). Por exemplo, a minha placa de Vídeo é a Intel HD 3000 (*Legacy Intel*), então vou usar o HighSierra.
 
+- [Compatibilidade de Hardware](https://github.com/dortania/OpenCore-Desktop-Guide/blob/master/extras/hardware.md)
 - [Placas de Vídeo](https://dortania.github.io/GPU-Buyers-Guide/)
 - [Placas de Rede Wi-fi](https://dortania.github.io/Wireless-Buyers-Guide/)
 
@@ -108,3 +109,38 @@ Lembrando:
 ### 4.2 Baixando os kexts e EFIs necessários:
 
 Vá para [Gathering Files](https://dortania.github.io/OpenCore-Desktop-Guide/ktext.html) para obter os kexts e drivers de firmware necessários.
+
+Consulte a seção de [hardware suportado](https://github.com/dortania/OpenCore-Desktop-Guide/blob/master/extras/hardware.md) para ter uma ideia melhor do que o macOS requer para inicializar, o suporte de hardware entre o Clover e o OpenCore é bastante semelhante.
+
+#### 4.2.1 Firmware
+
+Estes são os drivers usados pelo OpenCore, para a maioria dos sistemas, você só precisa de 2 drivers .efi para entrar em funcionamento:
+
+- **HfsPlus.efi**
+
+Necessário para ver volumes HFS (ou seja, partições / imagens do macOS Installers and Recovery). Não misture outros drivers HFS
+
+- **OpenRuntime.efi**
+
+Substituição do [AptioMemoryFix.efi[(https://github.com/acidanthera/AptioFixPkg), usada como uma extensão do OpenCore para ajudar a corrigir o boot.efi das correções da NVRAM e melhorar o gerenciamento de memória.
+
+***Para usuários de hardware mais antigo***
+
+- **OpenUsbKbDxe.efi**
+
+Usado para o seletor OpenCore em sistemas legados executando o DuetPkg, não recomendado e até prejudicial para UEFI (Ivy Bridge e mais recente)
+
+- **NvmExpressDxe.efi**
+
+Usado para Haswell e versões mais antigas quando nenhum driver NVMe está embutido no firmware, não é necessário se você não estiver usando uma unidade NVMe
+
+- **XhciDxe.efi**
+
+Usado para Sandy Bridge e versões mais antigas quando nenhum driver XHCI está embutido no firmware, não é necessário se você não estiver usando uma placa de expansão USB 3.0
+
+- **HfsPlusLegacy.efi**
+
+Variante herdada do HfsPlus, usada para sistemas que não possuem suporte à instrução RDRAND. Isso geralmente é visto na Sandy Bridge e em versões mais antigas. Para obter uma lista completa dos drivers compatíveis, consulte o item 11.2 na [Documentação em PDF do OpenCorePkg](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Configuration.pdf).
+
+**Esses arquivos devem ser gravados na pasta Drivers da sua partição EFI.**
+
