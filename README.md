@@ -146,13 +146,13 @@ O [HfsPlusLegacy.efi](https://github.com/acidanthera/OcBinaryData/blob/master/Dr
 
 #### 4.2.2 Kexts
 
-Um kext é uma extensão do kernel. Você pode pensar no kext como um driver para o macOS. Esses arquivos irão para a pasta Kexts na sua EFI.
+Um kext é uma extensão do kernel. Você pode pensar no kext como um driver para o macOS. Esses arquivos devem ir para a pasta Kexts na sua EFI. Verifique quais deles voê realmente precisa, de acordo com o seu hardware. Por isso que é ***imperativo conhecer bem o seu hardware***.
 
 ***Nota do Windows e Linux:***
 
 Kexts se parecerá com pastas normais no seu sistema operacional, verifique se a pasta que você está instalando tem uma extensão .kext visível (e não a adicione manualmente, se estiver faltando). Todos os kext listados abaixo podem ser encontrados pré-compilados no [Repositório Kext](https://onedrive.live.com/?authkey=%21APjCyRpzoAKp4xs&id=FE4038DA929BFB23%21455036&cid=FE4038DA929BFB23). Kexts aqui são compilados toda vez que há um novo commit.
 
-**Kexts Obrigatórias**
+**ESSES 2 KEXTS SÃO OBRIGATÓRIOS**
 
 - VirtualSMC
 
@@ -161,6 +161,7 @@ O kext [VirtualSMC](https://github.com/acidanthera/VirtualSMC/releases) emula o 
 - Lilu
 
 O kext [Lilu](https://github.com/vit9696/Lilu/releases) é um kext usado para corrigir muitos processos, necessário para AppleALC, WhateverGreen, VirtualSMC e muitos outros kexts. Sem o Lilu, eles não vão funcionar.
+
 
 **VirtualSMC Plugins**
 
@@ -215,4 +216,22 @@ O kext [RealtekRTL8111](https://github.com/Mieze/RTL8111_driver_for_OS_X/release
 O kext [LucyRTL8125Ethernet](https://github.com/Mieze/LucyRTL8125Ethernet) é necessário para placas Ethernet de 2,5 Gb da Realtek
 
 **USB**
+
+- USBInjectAll
+
+O [USBInjectAll](https://github.com/Sniki/OS-X-USB-Inject-All/releases) é usado para injetar controladores USB Intel em sistemas sem portas USB definidas na ACPI. Não é necessário no Skylake e mais recente (exceção: as placas AsRock precisam dele). Não funciona em todas as CPUs AMD. 
+
+- XHCI-unsupported
+
+O [XHCI-unsupported](https://github.com/RehabMan/OS-X-USB-Inject-All) é necessário para controladores USB não nativos. Os sistemas baseados em CPU AMD não precisam dele. Chipsets comuns que precisam dele:
+
+* H370
+* B360
+* H310
+* Z390 (não é necessário no Mojave e mais recente)
+* X79
+* X99
+* Placas AsRock (especificamente nas placas-mãe Intel, basicamente todas as placas)
+
+**Wi-fi e Bluetooth**
 
