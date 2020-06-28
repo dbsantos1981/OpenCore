@@ -1,12 +1,13 @@
 # Hackintosh com OpenCore
 ***Tentativa*** de criação de um **Guia de Instalação de um Hackintosh com OpenCore**
 
-Este texto é uma adaptação/tradução livre dos textos que estão em https://dortania.github.io
+Este texto é uma adaptação/tradução livre dos textos que estão no site do [OpenCore](https://dortania.github.io)
 
 ---
 **NÃO TEMOS RESPONSABILIDADE NENHUMA POR QUALQUER DANO OU POR QUALQUER PERDA DE DADOS QUE POSSAM OCORRER AO SEGUIR ESTES PROCEDIMENTOS. FAÇA-O POR SUA PRÓPRIA CONTA E RISCO. SE NÃO SE SENTE CAPAZ, PROCURE AJUDA. NÃO INICIE O PROCESSO ANTES DE LER TODO ESTE DOCUMENTO.**
 
 **É OBRIGATÓRIO CONHECER AS INFORMAÇÕES SOBRE SEU HARDWARE, SEM ELAS ESSE PROCEDIMENTO NÃO FAZ SENTIDO**
+
 ---
 
 ## 1 - Verifique o seu Hardware
@@ -511,6 +512,51 @@ Necessárioi para a 10ª geração de CPUs. Placas Gigabyte and AsRock não prec
 
 [SSDT-RHUB.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-RHUB.aml)
 
+#### 4.3.2.2 SSDTs: o caminho mais fácil
 
+Então, aqui vamos usar uma ferramenta super simples feita pela ***CorpNewt***: [SSDTTime](https://github.com/corpnewt/SSDTTime)
 
+O que essa ferramenta faz é um dump do DSDT do firmware do seu computador e em seguida cria as SSDTs com base nesse DSDT coletado.
 
+Isso deve ser feito na máquina de destino executando Windows ou Linux, ou seja, na máquina que você quer que seja o seu Hackintosh.
+
+**O que o SSDTTime não pode fazer:**
+
+- HEDT SSDTs -> Nessa plataforma o ACPI não é reconhecido de maneira correta. Isto inclui as placas X79, X99 e X299. Então pode ser usado um [prebuilt](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)
+
+- Laptop EC fix -> Isto ocorre porque não se quer que o EC do laptop seja desligado. Então pode ser usado um [prebuilt](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-fix.html)
+
+- SSDT-PNLF -> Precisa ser configurado para o seu sistema
+
+- SSDT-GPI0 -> Precisa ser configurado para o seu sistema
+
+- AWAC and RTC0 SSDTs -> As placas Intel da série 300 precisarão fazer essa configuração fora (os sistemas Z390 são mais comuns para exigir isso, mas alguns Gigabyte Z370 também)
+
+- PMC SSDT -> Para corrigir *300 series Intel NVRAM*. Então pode ser usado um [prebuilt](https://dortania.github.io/Getting-Started-With-ACPI/Universal/nvram.html)
+
+- USBX SSDT -> Está incluído nos SSDTs de amostra, mas o SSDTTime apenas faz parte do SSDT-EC, para Skylake e mais recentes pode-se usar [prebuilt](https://github.com/dortania/USB-Map-Guide/blob/master/extra-files/SSDT-USBX.aml)
+
+- RHUB SSDT -> Se você tiver uma CPU de 10a geração, precisará usar o prebuilt ou criá-lo manualmente.
+
+Para usuários que não possuem todas as opções disponíveis no SSDTTime, siga a seção "SSDTs: O longo caminho". Mesmo assim você ainda pode usar o SSDTTime para SSDTs compatíveis.
+
+**Executando o SSDTTime**
+
+No Windows, execute o arquivo *SSDTTime.bat* como administrador na máquina em que você quer fazer o Hackintosh. Aparecerá uma janela similar a essa:
+
+![Screenshot](img/ssdttime1.png)
+
+O que essas opções fazem:
+
+1. FixHPET - Corrigir conflitos de IRQ -> Correção de IRQ, necessária principalmente para usuários de X79, X99 e laptop (use a opção C para omitir IRQs herdados e conflitantes)
+2. FakeEC - Fake EC com reconhecimento de SO -> Este é o SSDT-EC, necessário para usuários da Catalina
+3. PluginType - Define plugin-type = 1 na CPU0 / PR00 -> Este é o SSDT-PLUG, apenas para Intel
+4. Dump DSDT - Faz um dump automaticamente do DSDT do seu sistema
+
+O que queremos fazer é selecionar a opção 4. Fazer o dump do DSDT primeiro e, em seguida, selecionar as opções apropriadas para o seu sistema.
+
+E o USBX? Para Skylake e mais recentes, além da AMD, você pode pegar um prebuilt aqui: [SSDT-USBX.aml](https://github.com/dortania/USB-Map-Guide/blob/master/extra-files/SSDT-USBX.aml). Este arquivo é plug and play e não requer configuração do dispositivo, não use no Broadwell e mais antigo.
+
+Nota sobre solução de problemas: consulte [Solução de problemas](https://dortania.github.io/OpenCore-Desktop-Guide/troubleshooting/troubleshooting.html) gerais, se você estiver tendo problemas ao executar SSDTTime.
+
+#### 4.3.2.3 Adicionando ao OpenCore
