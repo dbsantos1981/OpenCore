@@ -580,5 +580,16 @@ Os usuários do FixHPET também precisarão mesclar oc_patches.plist em seu conf
 - Copie a seção ACPI -> Patch de patches.plist
 - Cole onde os patches antigos estavam no config.plist
 
-long way
+### 4.3.3 O caminho longo para as SSDTs
+
+Infelizmente, algumas coisas não são tratadas pelo SSDTTime, portanto, não tenha medo, pois fazer SSDTs é super fácil. O processo básico é:
+
+- Dump do DSDT (o dump que o SSDTTime fez serve)
+- Descompilar o DSDT
+- Faça as SSDTs com base nesse DSDT (você precisará do MaciASL ou de um editor de texto)
+- Compilar SSDTs
+
+Agora continue e domine os caminhos da ACPI!
+
+
 
