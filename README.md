@@ -730,9 +730,21 @@ O objetivo deste SSDT é criar um dispositivo PNLF para o macOS, especificamente
 
 Para a correção da luz de fundo, existem 2 métodos que você pode escolher:
 
-- Prebuilt
+- **Prebuilt**
 
-- Manual
+De longe o método mais fácil, tudo o que você precisa fazer é baixar o seguinte arquivo:
+
+  - [SSDT-PNLF.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PNLF.aml) -> Para a maioria dos usuários
+
+  - [SSDT-PNLF-CFL.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PNLF-CFL.aml) -> Para Coffee Lake e mais recente
+
+Principais coisas a serem observadas com este método:
+
+  - Assume o caminho da GPU, funciona muito bem para 99% dos dispositivos, mas se você estiver com problemas para controlar a luz de fundo, isso pode ser algo a se observar
+  - Esse método não ensina nada a você. Para a maioria, isso não importa. Mas, para alguns, saber o que faz o seu hackintosh funcionar faz parte da jornada.
+
+- **Manual**
+
 
 #### 4.5.2 dd
 
