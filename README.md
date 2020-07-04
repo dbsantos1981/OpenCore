@@ -3,6 +3,8 @@
 
 Este texto é uma adaptação/tradução livre dos textos que estão no site do [OpenCore](https://dortania.github.io). A maioria das imagens utilizadas eu mesmo fiz durante os meus testes do procedimento, as demais peguei nesse site mesmo.
 
+Tentei reorganizar o conteúdo de modo a tentar seguir uma sequência lógica de ações. Espero ter conseguido. Caso tenha críticas ou sugestões favor relatar.
+
 ---
 **NÃO TEMOS RESPONSABILIDADE NENHUMA POR QUALQUER DANO OU POR QUALQUER PERDA DE DADOS QUE POSSAM OCORRER AO SEGUIR ESTES PROCEDIMENTOS. FAÇA-O POR SUA PRÓPRIA CONTA E RISCO. SE NÃO SE SENTE CAPAZ, PROCURE AJUDA. NÃO INICIE O PROCESSO ANTES DE LER TODO ESTE DOCUMENTO.**
 
@@ -674,7 +676,7 @@ Compilar e descompilar com o Linux é tão simples quanto, você precisará de u
 
 Se o arquivo .aml compilado for fornecido, um arquivo .dsl descompilado será fornecido e vice-versa.
 
-### 4.4 Desativando GPUs sem suporte para desktops (SSDT-GPU-DISABLE)
+### 4.4 Correção para Desktops (desativando GPUs sem suporte (SSDT-GPU-DISABLE))
 
 Isso é necessário principalmente para GPUs que não são suportadas no macOS, principalmente os usuários da Nvidia que desejam emparelhar uma GPU AMD para uso no macOS. Embora o WhateverGreen ofereça suporte ao `boot-arg -wegnoegpu`, isso só funciona quando executado no iGPU; portanto, para o resto de nós, precisamos fazer um SSDT. Portanto, para desativar uma GPU específica, precisamos encontrar algumas coisas:
 
@@ -706,4 +708,34 @@ E pronto! Encontramos o caminho da ACPI, estamos prontos para continuar.
 
 **Fazendo o SSDT**
 
-Para começar, pegue o SSDT-GPU-DISABLE e abra-o. Aqui há algumas coisas para mudar:
+Para começar, pegue o nosso exemplo de [SSDT-GPU-DISABLE](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/decompiled/SSDT-GPU-DISABLE.dsl.zip) e abra-o. Mude o seguinte:
+
+`Externo (_SB_.PCI0.PEG0.PEGP, DeviceObj)
+Método (_SB.PCI0.PEG0.PEGP._DSM, 4, NotSerialized)
+`
+Para o nosso exemplo, vamos trocar o seguinte:
+
+- todos *PCI0* para **PC02**
+- todos *PEG0* para **BR2A**
+
+Dica: se o caminho da ACPI for um pouco menor que o exemplo, tudo bem. Apenas verifique se os caminhos da ACPI estão corretos para o seu dispositivo. Alguns usuários também podem precisar adaptar `_SB_` ao seu caminho.
+
+Com isso feito, compile o DSDT conforme procedimento já informado.
+
+### 4.5 Correções para Laptops
+
+#### 4.5.1 Backlight (SSDT-PNLF)
+
+O objetivo deste SSDT é criar um dispositivo PNLF para o macOS, especificamente um com um ID de hardware APP0002. Felizmente, o WhateverGreen cuidará do resto do trabalho para nós.
+
+Para a correção da luz de fundo, existem 2 métodos que você pode escolher:
+
+- Prebuilt
+
+- Manual
+
+#### 4.5.2 dd
+
+#### 4.5.3 dd
+
+### 4.6 Correções para Ambos (Desktops e Laptops)
