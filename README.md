@@ -1,14 +1,14 @@
 # Hackintosh com OpenCore
 ***Tentativa*** de criação de um **Guia de Instalação de um Hackintosh com OpenCore**
 
-Este texto é uma adaptação/tradução livre dos textos que estão no site do [OpenCore](https://dortania.github.io). A maioria das imagens utilizadas eu mesmo fiz durante os meus testes do procedimento, as demais peguei nesse site mesmo.
+Este texto é uma adaptação/tradução livre dos textos que estão no site do [OpenCore](https://dortania.github.io). Algumas das imagens utilizadas eu mesmo fiz durante os meus testes do procedimento, as demais peguei nesse site do Opencore.
 
 Tentei reorganizar o conteúdo de modo a tentar seguir uma sequência lógica de ações. Espero ter conseguido. Caso tenha críticas ou sugestões favor relatar.
 
 ---
 **NÃO TEMOS RESPONSABILIDADE NENHUMA POR QUALQUER DANO OU POR QUALQUER PERDA DE DADOS QUE POSSAM OCORRER AO SEGUIR ESTES PROCEDIMENTOS. FAÇA-O POR SUA PRÓPRIA CONTA E RISCO. SE NÃO SE SENTE CAPAZ, PROCURE AJUDA. NÃO INICIE O PROCESSO ANTES DE LER TODO ESTE DOCUMENTO.**
 
-**É OBRIGATÓRIO CONHECER AS INFORMAÇÕES SOBRE SEU HARDWARE, SEM ELAS ESSE PROCEDIMENTO NÃO FAZ SENTIDO**
+**É OBRIGATÓRIO CONHECER AS INFORMAÇÕES SOBRE SEU HARDWARE, SEM ELAS ESSE PROCEDIMENTO NÃO FAZ SENTIDO ALGUM.**
 
 ---
 
@@ -872,6 +872,37 @@ If (_OSI ("Darwin"))
 
 Feito isto, pode compilar o SSDT conforme procedimento já passado. Depois faça o [cleanup](https://dortania.github.io/Getting-Started-With-ACPI/cleanup.html)
 
-#### 4.5.3 Disabling laptop dGPUs (SSDT-dGPU-Off/NoHybGfx)
+#### 4.5.3 Desativando GPUs sem suporte (SSDT-dGPU-Off/NoHybGfx))
+
+Para os laptops, podemos ocultar a dGPU do macOS com o pequeno argumento de inicialização chamado -wegnoegpu do WhateverGreen. Mas há um pequeno problema nisso: a dGPU ainda está consumindo energia, drenando sua bateria lentamente. Observe que isso não é necessário para instalação do MacOS, mas é recomendado para pós-instalação. Abordaremos dois métodos para desativar a dGPU em um laptop:
+
+- **Método Optimus**
+
+É o método .off encontrado nas GPUs Optimus; esta é a maneira esperada de desligar uma GPU, mas alguns podem achar que sua dGPU será reiniciada posteriormente. Esse método é visto principalmente nos equipamentos da Lenovo, mas deve funcionar para a maioria dos usuários:
+
+Para começar, faça o download da [SSDT-dGPU-Off.dsl](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/decompiled/SSDT-dGPU-Off.dsl.zip)
+
+Em seguida, precisamos acessar o Windows e seguir para o seguinte:
+
+Gerenciador de dispositivos -> Adaptadores de vídeo -> dGPU -> Propriedades -> Detalhes> nome do dispositivo BIOS
+Observe que algumas GPUs podem estar ocultas em "nome do dispositivo BIOS", e isso deve fornecer um caminho ACPI para sua dGPU, mais comumente:
+
+Nvidia dGPU: `\_SB.PCI0.PEG0.PEGP`
+AMD dGPU: `\_SB.PCI0.PEGP.DGFX`
+
+![Screenshot](img/nvidia.png)
+
+Agora, com isso, precisaremos alterar o caminho da ACPI no SSDT. Seções principais:
+
+`Externo (_SB.PCI0.PEG0.PEGP._OFF, MethodObj)
+If (CondRefOf (\_SB.PCI0.PEG0.PEGP._OFF)) {\_SB.PCI0.PEG0.PEGP._OFF ()}`
+Uma vez adaptado à sua configuração, vá para a seção de compilação
+
+Para aqueles que estiverem com problemas de *sleep*, você pode consultar o tópico [Rehabman](https://www.tonymacx86.com/threads/guide-disabling-discrete-graphics-in-dual-gpu-laptops.163772/)
+
+- Método Bumblebee
+
+
+
 
 ### 4.6 Correções para Ambos (Desktops e Laptops)
