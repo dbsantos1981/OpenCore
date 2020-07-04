@@ -888,21 +888,50 @@ Gerenciador de dispositivos -> Adaptadores de vídeo -> dGPU -> Propriedades -> 
 Observe que algumas GPUs podem estar ocultas em "nome do dispositivo BIOS", e isso deve fornecer um caminho ACPI para sua dGPU, mais comumente:
 
 Nvidia dGPU: `\_SB.PCI0.PEG0.PEGP`
+
 AMD dGPU: `\_SB.PCI0.PEGP.DGFX`
 
 ![Screenshot](img/nvidia.png)
 
 Agora, com isso, precisaremos alterar o caminho da ACPI no SSDT. Seções principais:
 
-`Externo (_SB.PCI0.PEG0.PEGP._OFF, MethodObj)
-If (CondRefOf (\_SB.PCI0.PEG0.PEGP._OFF)) {\_SB.PCI0.PEG0.PEGP._OFF ()}`
+`
+Externo (_SB.PCI0.PEG0.PEGP._OFF, MethodObj)
+
+If (CondRefOf (\_SB.PCI0.PEG0.PEGP._OFF)) {\_SB.PCI0.PEG0.PEGP._OFF ()}
+`
 Uma vez adaptado à sua configuração, vá para a seção de compilação
 
 Para aqueles que estiverem com problemas de *sleep*, você pode consultar o tópico [Rehabman](https://www.tonymacx86.com/threads/guide-disabling-discrete-graphics-in-dual-gpu-laptops.163772/)
 
 - Método Bumblebee
 
+Em algumas máquinas, a chamada .off simples não mantém o cartão desligado corretamente; é aí que o método Bumblebee entra. Esse SSDT realmente envia a dGPU para o estado D3, sendo o estado de energia mais baixo que um dispositivo pode suportar. Agradecemos a Mameo pela adaptação original.
 
+Para começar, pegue o [SSDT-NoHybGfx.dsl](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/decompiled/SSDT-NoHybGfx.dsl.zip)
 
+Em seguida, precisamos acessar o Windows e seguir para o seguinte:
+
+Gerenciador de dispositivos -> Adaptadores de vídeo -> dGPU -> Propriedades -> Detalhes> nome do dispositivo BIOS
+Isso deve fornecer um caminho ACPI para sua dGPU, mais comumente:
+
+- Nvidia dGPU: `\_SB.PCI0.PEG0.PEGP`
+- AMD dGPU: `\_SB.PCI0.PEGP.DGFX`
+
+Agora, com isso, precisaremos alterar o caminho da ACPI no SSDT. Seções principais:
+
+`
+External (_SB_.PCI0.PEG0.PEGP._DSM, MethodObj)    // dGPU ACPI Path
+
+External (_SB_.PCI0.PEG0.PEGP._PS3, MethodObj)    // dGPU ACPI Path
+
+If ((CondRefOf (\_SB.PCI0.PEG0.PEGP._DSM) && CondRefOf (\_SB.PCI0.PEG0.PEGP._PS3)))
+  // Card Off Request
+  \_SB.PCI0.PEG0.PEGP._DSM (ToUUID ("a486d8f8-0bda-471b-a72b-6042a6b5bee0"), 0x0100, 0x1A, Buffer (0x04)
+
+  // Card Off
+  \_SB.PCI0.PEG0.PEGP._PS3 ()
+`
+Feito isto, pode compilar o SSDT conforme procedimento já passado. Depois faça o [cleanup](https://dortania.github.io/Getting-Started-With-ACPI/cleanup.html)
 
 ### 4.6 Correções para Ambos (Desktops e Laptops)
