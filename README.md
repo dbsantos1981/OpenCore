@@ -636,8 +636,44 @@ Para o último, você só precisa substituir os seguintes arquivos pela [versão
 
 No primeiro, você pode realmente pular a seção ACPI, retornar ao guia OpenCore ([Desktop](https://dortania.github.io/OpenCore-Desktop-Guide/), [Laptop](https://dortania.github.io/vanilla-laptop-guide/)) e terminar de fazer o USB. Depois de inicializado no seletor, você pode desligar o PC e verificar seu USB:
 
-![ScreenShot](/img/sysreport.img)
+![ScreenShot](img/sysreport.png)
 
 E pronto! Você tem um DSDT! Agora você pode continuar fazendo SSDTs
 
 #### 4.3.3.2 Compilando e Descompilando Tabelas ACPI
+
+Consulte [Solução de problemas](https://dortania.github.io/Getting-Started-With-ACPI/troubleshooting.html) se você tiver erros de dumping / compilação.
+
+- Compilação e descompilação do macOS
+
+Portanto, compilar DSDTs e SSDTs é bastante fácil com o macOS, tudo o que você precisa é o [MaciASL](https://github.com/acidanthera/MaciASL/releases). Para compilar, apenas File -> SaveAs -> ACPI Machine Language Binary (.AML), a descompilação está apenas abrindo o arquivo no MaciASL.
+
+Para aqueles que preferem a linha de comando, pegue [iasl-stable](https://github.com/acidanthera/MaciASL/blob/master/Dist/iasl-stable) e execute o seguinte:
+
+`caminho/para/iasl.exe caminho/para/DSDT.aml`
+
+Se o arquivo .aml compilado for fornecido, um arquivo .dsl descompilado será fornecido e vice-versa.
+
+![ScreenShot](img/macos-compile.png)
+
+- Compilação e descompilação do Windows
+
+Compilar e descompilar no Windows é bastante simples, porém, você precisará do [iasl.exe](https://acpica.org/downloads/binary-tools) e do Prompt de Comando:
+
+`caminho/para/iasl.exe caminho/para/DSDT.aml`
+
+![ScreenShot](img/windows-compile.png)
+
+Se o arquivo .aml compilado for fornecido, um arquivo .dsl descompilado será fornecido e vice-versa.
+
+- Compilação e descompilação do Linux
+
+Compilar e descompilar com o Linux é tão simples quanto, você precisará de uma cópia do iasl. Você pode obtê-lo [aqui](http://amdosx.kellynet.nl/iasl.zip) ou através do pacote iasl no seu gerenciador de pacotes. iasl pode ser usado como tal:
+
+`caminho/para/iasl caminho/para/DSDT.aml`
+
+Se o arquivo .aml compilado for fornecido, um arquivo .dsl descompilado será fornecido e vice-versa.
+
+### 4.4 Desativando GPUs sem suporte para desktops (SSDT-GPU-DISABLE)
+
+dsdsd
