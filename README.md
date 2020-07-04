@@ -591,5 +591,53 @@ Infelizmente, algumas coisas não são tratadas pelo SSDTTime, portanto, não te
 
 Agora continue e domine os caminhos da ACPI!
 
+#### 4.3.3.1 Obtendo uma cópia do nosso DSDT
 
+Então, para começar, precisamos obter uma cópia do seu DSDT no firmware. A maneira mais fácil é pegar o DSDT.aml feito pelo SSDTTime. Aqui estão algumas outras opções:
 
+**A partir do Windows:**
+
+- SSDTTime
+
+  - Escolha a opção 4. Dump DSDT - Despeja automaticamente o DSDT do sistema
+
+- ou então o **acpidump.exe**
+
+No prompt de comando, execute: acpidump.exe -b -n DSDT -z, isso fará o dump do DSDT como um arquivo .dat. Renomeie isso para DSDT.aml
+Observe que todos os patches ACPI do Clover/OpenCore serão aplicados ao DSDT com os 2 métodos acima.
+
+**A partir do Linux:**
+
+- SSDTTime
+
+  - Escolha a opção 4. Dump DSDT - Despeja automaticamente o DSDT do sistema
+  
+Observe que todos os patches ACPI do Clover/OpenCore serão aplicados ao DSDT com o método acima.
+
+**A partir do Clover**
+
+Para aqueles com o Clover instalado anteriormente, esta é uma maneira simples de obter suas tabelas ACPI:
+
+Pressione F4 no menu Inicialização do Clover. O DSDT pode ser encontrado em EFI / CLOVER / ACPI / origin, esta pasta deve ser criada antes de realizar o dumping.
+
+**A partir do OpenCore**
+
+Com o OpenCore 0.5.9, temos uma nova peculiaridade chamada SysReport, que realmente despeja nosso DSDT automaticamente ao acessar a tela de inicialização. Os principais problemas são:
+
+- Você já precisa de um OpenCore USB inicializável para obter esse despejo
+- Isso também requer uma versão DEBUG do 0.5.9
+
+Para o último, você só precisa substituir os seguintes arquivos pela [versão DEBUG](https://github.com/acidanthera/OpenCorePkg/releases):
+
+- EFI/BOOT/BOOTx64.efi
+- EFI/OC/Bootstrap/Bootstrap.efi
+- EFI/OC/Drivers/OpenRuntime.efi
+- EFI/OC/OpenCore.efi
+
+No primeiro, você pode realmente pular a seção ACPI, retornar ao guia OpenCore ([Desktop](https://dortania.github.io/OpenCore-Desktop-Guide/), [Laptop](https://dortania.github.io/vanilla-laptop-guide/)) e terminar de fazer o USB. Depois de inicializado no seletor, você pode desligar o PC e verificar seu USB:
+
+![ScreenShot](/img/sysreport.img)
+
+E pronto! Você tem um DSDT! Agora você pode continuar fazendo SSDTs
+
+#### 4.3.3.2 Compilando e Descompilando Tabelas ACPI
