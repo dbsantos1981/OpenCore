@@ -799,15 +799,79 @@ Esta é uma solução única para todos, onde basicamente enganamos nosso hardwa
 
 Renomear XOSI (adicione isso em config.plist -> ACPI -> Patch):
 
-|Comment|	String|	Change _OSI to XOSI
-|Enabled|	Boolean|	YES
-|Count|	Number|	0
-|Limit|	Number|	0
-|Find	|Data|	5f4f5349
-|Replace|	Data|	584f5349
+:---:|:---:|:---:|
+Comment|	String|	Change _OSI to XOSI
+Enabled|	Boolean|	YES
+Count|	Number|	0
+Limit|	Number|	0
+Find	|Data|	5f4f5349
+Replace|	Data|	584f5349
 
 - **Manual**
 
-#### 4.5.3 dd
+1. Localizando o caminho da ACPI
+
+Encontrar o caminho ACPI é bastante fácil, na verdade, primeiro abra o DSDT descompilado obtido de *Dumping the DSDT e Decompiling and Compiling* com o maciASL (se no macOS) ou qualquer outro editor de texto no Windows ou Linux (o [VSCode possui uma extensão](https://marketplace.visualstudio.com/items?itemName=Thog.vscode-asl) ACPI que pode também ajuda).
+
+Pesquise por dispositivo (GPI0). Deverá fornecer um resultado semelhante a este:
+
+![ScreenShot](img/gpi0.png)
+
+O que nos preocupa com isso é o método `_STA`:
+
+`Method (_STA, 0, NotSerialized)
+{
+  If ((GPHD == One))
+  {
+    Return (0x03)
+  }
+  Return (0x0F)
+}`
+
+O que queremos é que ele sempre retorne 0x0F ao inicializar o macOS, portanto, queremos criar um SSDT que retorne GPHD == Zero no macOS.
+
+Observe que você pode ter o contrário, onde o **GPHD** precisa ser definido como **Um** para retornar **0x0F**. E o nome do seu dispositivo também pode ser diferente, não use SSDTs aleatórios pensando que funcionará.
+
+Aqui estão mais alguns exemplos:
+
+![ScreenShot](img/gpi0-2.png)
+
+Com este exemplo, podemos ver que precisamos do **SBRG** e do **GPEN** para retornar **Um**. Se apenas um estiver presente, isso criará alguns problemas; portanto, em nosso SSDT, queremos que os dois retornem **Um**:
+
+2. Editando o exemplo SSDT
+
+Agora que temos nosso caminho ACPI, vamos pegar nosso SSDT e começar a trabalhar:
+
+- [SSDT-GPI0.dsl](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/decompiled/SSDT-GPI0.dsl)
+
+No segundo exemplo, vamos definir GPEN e SBRG como Um para permitir que ele funcione no macOS:
+
+Antes:
+
+`
+If (_OSI ("Darwin"))
+  {
+    GPEN = One <- Change to the right variables
+    SBRG = One <- Change to the right variables
+  }
+`
+
+![ScreenShot](img/ssdtGPIO-before.png)
+
+Seguindo o exemplo de caminho encontrado, o SSDT deve ficar como:
+
+Depois:
+
+`
+If (_OSI ("Darwin"))
+  {
+    GPEN = One <- Proper variables
+  }
+`
+![ScreenShot](img/ssdtGPIO-after.png)
+
+Feito isto, pode compilar o SSDT conforme procedimento já passado. Depois faça o [cleanup](https://dortania.github.io/Getting-Started-With-ACPI/cleanup.html)
+
+#### 4.5.3 Disabling laptop dGPUs (SSDT-dGPU-Off/NoHybGfx)
 
 ### 4.6 Correções para Ambos (Desktops e Laptops)
