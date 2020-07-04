@@ -734,19 +734,79 @@ Para a correção da luz de fundo, existem 2 métodos que você pode escolher:
 
 De longe o método mais fácil, tudo o que você precisa fazer é baixar o seguinte arquivo:
 
-  - [SSDT-PNLF.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PNLF.aml) -> Para a maioria dos usuários
+  1. [SSDT-PNLF.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PNLF.aml) -> Para a maioria dos usuários
 
-  - [SSDT-PNLF-CFL.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PNLF-CFL.aml) -> Para Coffee Lake e mais recente
+  2. [SSDT-PNLF-CFL.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-PNLF-CFL.aml) -> Para Coffee Lake e mais recente
 
 Principais coisas a serem observadas com este método:
 
-  - Assume o caminho da GPU, funciona muito bem para 99% dos dispositivos, mas se você estiver com problemas para controlar a luz de fundo, isso pode ser algo a se observar
-  - Esse método não ensina nada a você. Para a maioria, isso não importa. Mas, para alguns, saber o que faz o seu hackintosh funcionar faz parte da jornada.
+  1. Assume o caminho da GPU, funciona muito bem para 99% dos dispositivos, mas se você estiver com problemas para controlar a luz de fundo, isso pode ser algo a se observar
+  2. Esse método não ensina nada a você. Para a maioria, isso não importa. Mas, para alguns, saber o que faz o seu hackintosh funcionar faz parte da jornada.
 
 - **Manual**
 
+  1. **Encontrando o caminho ACPI**
+  
+Vamos assumir que o Windows já está neste laptop, caso contrário, criar esse SSDT é um pouco mais difícil. Agora abra o Gerenciador de Dispositivos e siga para o seguinte:
 
-#### 4.5.2 dd
+  - Gerenciador de dispositivos -> Adaptadores de vídeo -> Propriedades -> Detalhes> nome do dispositivo BIOS
+  
+Observe que alguns caminhos da GPU ACPI podem estar ocultos em "nome do dispositivo BIOS"
+
+![ScreenShot](img/devicemanager.png)
+
+No exemplo acima, podemos ver que nossa tela está conectada a PCI0.GFX0
+
+  2. **Editar o SSDT de amostra**
+
+Agora que temos nosso caminho ACPI, vamos pegar nosso SSDT e começar a trabalhar:
+
+- [SSDT-PNLF.dsl](https://github.com/acidanthera/WhateverGreen/blob/master/Manual/SSDT-PNLF.dsl) -> Para os mais antigos
+- [SSDT-PNLF-CFL.dsl](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/decompiled/SSDT-PNLF-CFL.dsl.zip) -> Para Coffee Lake e mais recente
+Por padrão, isso usa `PCI0.GFX0` para o caminho. Você precisa renomear corretamente. Neste exemplo, assumiremos que seu caminho é `PCI0.GPU0`:
+
+Antes:
+
+External (`_SB_.PCI0.GFX0`, DeviceObj) <- Renomeie esse
+Scope (`_SB.PCI0.GFX0`) <- Renomeie esse
+Device(`_SB.PCI0.GFX0.PNLF`) <- Renomeie esse
+
+![ScreenShot](img/ssdt-before.png)
+
+Seguindo o exemplo de caminho encontrado, o SSDT deve ser algo como isto:
+
+Depois:
+
+External (`_SB_.PCI0.GPU0`, DeviceObj) <- Renamed
+Scope (`_SB.PCI0.GPU0`) <- Renamed
+Device(`_SB.PCI0.GPU0.PNLF`) <- Renamed
+
+![ScreenShot](img/ssdt-after.png)
+  
+Feito isto, pode compilar o SSDT conforme procedimento já passado. Depois faça o [cleanup](https://dortania.github.io/Getting-Started-With-ACPI/cleanup.html)
+
+#### 4.5.2 Trackpad GPIO
+
+Esse SSDT é usado para forçar a conexão do GPI0 para VoodooI2C.
+
+Com a maioria dos DSDTs de laptop modernos, existe uma variável chamada GPEN ou GPHD que é usada para definir o status do dispositivo GPI0. Para nós, queremos ativar o dispositivo.
+
+- **Prebuilt**
+
+Esta é uma solução única para todos, onde basicamente enganamos nosso hardware para pensar que ele está inicializando o Windows. O problema com esse método é que é comum interromper a inicialização do Windows, então devemos evitar, a não ser que seja a única solução para o problema.
+
+- [SSDT-XOSI](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-XOSI.aml)
+
+Renomear XOSI (adicione isso em config.plist -> ACPI -> Patch):
+
+|Comment|	String|	Change _OSI to XOSI
+|Enabled|	Boolean|	YES
+|Count|	Number|	0
+|Limit|	Number|	0
+|Find	|Data|	5f4f5349
+|Replace|	Data|	584f5349
+
+- **Manual**
 
 #### 4.5.3 dd
 
