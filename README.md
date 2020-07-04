@@ -1,7 +1,7 @@
 # Hackintosh com OpenCore
 ***Tentativa*** de criação de um **Guia de Instalação de um Hackintosh com OpenCore**
 
-Este texto é uma adaptação/tradução livre dos textos que estão no site do [OpenCore](https://dortania.github.io)
+Este texto é uma adaptação/tradução livre dos textos que estão no site do [OpenCore](https://dortania.github.io). A maioria das imagens utilizadas eu mesmo fiz durante os meus testes do procedimento, as demais peguei nesse site mesmo.
 
 ---
 **NÃO TEMOS RESPONSABILIDADE NENHUMA POR QUALQUER DANO OU POR QUALQUER PERDA DE DADOS QUE POSSAM OCORRER AO SEGUIR ESTES PROCEDIMENTOS. FAÇA-O POR SUA PRÓPRIA CONTA E RISCO. SE NÃO SE SENTE CAPAZ, PROCURE AJUDA. NÃO INICIE O PROCESSO ANTES DE LER TODO ESTE DOCUMENTO.**
@@ -676,4 +676,34 @@ Se o arquivo .aml compilado for fornecido, um arquivo .dsl descompilado será fo
 
 ### 4.4 Desativando GPUs sem suporte para desktops (SSDT-GPU-DISABLE)
 
-dsdsd
+Isso é necessário principalmente para GPUs que não são suportadas no macOS, principalmente os usuários da Nvidia que desejam emparelhar uma GPU AMD para uso no macOS. Embora o WhateverGreen ofereça suporte ao `boot-arg -wegnoegpu`, isso só funciona quando executado no iGPU; portanto, para o resto de nós, precisamos fazer um SSDT. Portanto, para desativar uma GPU específica, precisamos encontrar algumas coisas:
+
+- Caminho ACPI da GPU
+- [SSDT-GPU-DISABLE](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/decompiled/SSDT-GPU-DISABLE.dsl.zip)
+
+**Caminho ACPI da GPU**
+
+Para encontrar o caminho PCI de uma GPU é bastante simples, a melhor maneira de encontrá-lo é executando o Windows:
+
+- Abra o Gerenciador de dispositivos
+- Selecione Adaptadores de vídeo, clique com o botão direito do mouse na sua GPU e selecione Propriedades
+- Na guia Detalhes, procure "Caminhos de localização"
+
+Observe que algumas GPUs podem estar ocultas em "nome do dispositivo BIOS"
+
+![ScreenShot](img/amd.png)
+
+![ScreenShot](img/nvidia.png)
+
+O segundo "ACPI" é o que queremos:
+
+`ACPI (_SB _) # ACPI (PC02) #ACPI (BR2A) #ACPI (PEGP) #PCI (0000) #PCI (0000)`
+
+Agora, converter isso em um caminho ACPI é bastante simples, remova os #ACPI e #PCI (0000):
+
+`_SB_.PC02.BR2A.PEGP`
+E pronto! Encontramos o caminho da ACPI, estamos prontos para continuar.
+
+**Fazendo o SSDT**
+
+Para começar, pegue o SSDT-GPU-DISABLE e abra-o. Aqui há algumas coisas para mudar:
