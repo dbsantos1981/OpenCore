@@ -986,3 +986,26 @@ As principais coisas a serem observadas com este método:
 **Empacotando**
 
 Quando terminar de fazer seu SSDT, vá para a próxima página para concluir o restante dos SSDTs ou vá para aqui se estiver pronto para concluir: [Limpar](https://dortania.github.io/Getting-Started-With-ACPI/cleanup.html)
+
+#### 4.6.1.2 SSDTTime
+
+O segundo envolve o uso de SSDTTime, que automatiza a maior parte do processo. Veja aqui como usá-lo: [SSDTs: Easy Way](https://dortania.github.io/Getting-Started-With-ACPI/ssdt-methods/ssdt-easy.html)
+
+Para obter o SSDT-PLUG, execute o seguinte:
+
+- **4. Despeje o DSDT** e execute **2. FakeEC**
+
+Isso fornecerá alguns arquivos, o principal deles é o SSDT-EC.aml. O DSDT e .dsl são deixados apenas para referência ou verificação.
+
+As principais coisas a serem observadas com este método:
+
+- Não funciona no HEDT e no hardware do servidor (por exemplo, X99 e X299) -> Embora a maioria que segue este guia provavelmente esteja em hardware de consumidor, aqueles com hardware mais sofisticado precisarão usar o método Prebuilt ou Manual
+- Não funciona em laptops -> Assim como no HEDT, você precisará usar o método Pré-construído ou Manual
+- Não fornece a propriedade USBX para consertar energia -> Isso pode ser facilmente corrigido usando esse arquivo pré-construído, além do SSDT-EC: [SSDT-USBX.aml](https://github.com/dortania/USB-Map-Guide/blob/master/extra-files/SSDT-USBX.aml). Nota USBX é necessário apenas para Skylake e versões mais recentes
+- Realmente não ensina nada a você. Para a maioria, isso não importa. Mas, para alguns, saber o que faz o seu hackintosh funcionar faz parte da jornada
+
+Quando terminar de fazer seu SSDT, vá para a próxima página para concluir o restante dos SSDTs ou vá para aqui se estiver pronto para concluir: [Limpar](https://dortania.github.io/Getting-Started-With-ACPI/cleanup.html)
+
+#### 4.6.1.3 Manual
+
+modo manual
