@@ -920,8 +920,7 @@ Isso deve fornecer um caminho ACPI para sua dGPU, mais comumente:
 
 Agora, com isso, precisaremos alterar o caminho da ACPI no SSDT. Seções principais:
 
-`
-External (_SB_.PCI0.PEG0.PEGP._DSM, MethodObj)    // dGPU ACPI Path
+`External (_SB_.PCI0.PEG0.PEGP._DSM, MethodObj)    // dGPU ACPI Path
 
 External (_SB_.PCI0.PEG0.PEGP._PS3, MethodObj)    // dGPU ACPI Path
 
@@ -930,8 +929,60 @@ If ((CondRefOf (\_SB.PCI0.PEG0.PEGP._DSM) && CondRefOf (\_SB.PCI0.PEG0.PEGP._PS3
   \_SB.PCI0.PEG0.PEGP._DSM (ToUUID ("a486d8f8-0bda-471b-a72b-6042a6b5bee0"), 0x0100, 0x1A, Buffer (0x04)
 
   // Card Off
-  \_SB.PCI0.PEG0.PEGP._PS3 ()
-`
+  \_SB.PCI0.PEG0.PEGP._PS3 ()`
+
 Feito isto, pode compilar o SSDT conforme procedimento já passado. Depois faça o [cleanup](https://dortania.github.io/Getting-Started-With-ACPI/cleanup.html)
 
 ### 4.6 Correções para Ambos (Desktops e Laptops)
+
+#### 4.6.1 Corrigindo Embedded Controller (Controlador Incorporado) SSDT-EC/USBX
+
+O objetivo do SSDT-EC/UBX é o seguinte:
+
+- Em desktops, o EC (ou mais conhecido como controlador incorporado) não é compatível com o driver AppleACPIEC. Para contornar isso, desabilitamos este dispositivo ao executar o macOS
+
+- O AppleBusPowerController procurará um dispositivo chamado EC, portanto, queremos criar um dispositivo falso para o kext carregar
+
+  - O AppleBusPowerController também requer um dispositivo USBX para fornecer propriedades de energia USB para Skylake e versões mais recentes, por isso, agruparemos esse dispositivo com a correção EC
+
+- Nos laptops, o EC é usado para teclas de atalho e bateria; portanto, desativar isso não é ideal demais. O problema é que o nome do nosso CE não é compatível, portanto, criaremos um simples dispositivo "falso" que satisfará a Apple
+
+Resumo:
+
+- EC é controlador incorporado
+- Os desktops precisarão de um EC real e um EC falso criado
+- Os laptops querem apenas um presente falso de CE adicional
+- Skylake e dispositivos mais novos também podem requerer o USBX
+
+Métodos para fazer esse SSDT:
+
+Para o fix do EC, há 3 métodos que você pode escolher:
+
+- Prebuilt
+O pré-construído para desktops é muito inchado. É recomendável usar os dois métodos abaixo. Os prebuilts para laptop são facilmente utilizáveis.
+- SSDTTime
+Observe que este método não suporta laptops, servidores ou sistemas HEDT
+- Manual
+
+#### 4.6.1.1 Prebuilt
+
+Até agora, a maneira mais fácil de consertar o seu Embedded Controller é baixar um dos arquivos abaixo:
+
+**Desktops**:
+
+[SSDT-EC-USBX-DESKTOP](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-EC-USBX-DESKTOP.aml) Para desktops Skylake e sistemas mais novos e baseados em CPU AMD
+[SSDT-EC-DESKTOP](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-EC-DESKTOP.aml) Para desktops Broadwell e mais antigos
+
+**Laptops**:
+
+[SSDT-EC-USBX-LAPTOP.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-EC-USBX-LAPTOP.aml) Para laptops Skylake e mais recentes
+[SSDT-EC-LAPTOP.aml](https://github.com/dortania/Getting-Started-With-ACPI/blob/master/extra-files/compiled/SSDT-EC-LAPTOP.aml) Para laptops Broadwell e mais antigos
+
+As principais coisas a serem observadas com este método:
+
+- Inchado - Há nomes de ACPI para cada tipo, isso significa que há atrasos adicionais nos tempos de inicialização
+- Realmente não ensina nada a você - Para a maioria, isso não importa. Mas, para alguns, saber o que faz o seu hackintosh funcionar faz parte da jornada
+
+**Empacotando**
+
+Quando terminar de fazer seu SSDT, vá para a próxima página para concluir o restante dos SSDTs ou vá para aqui se estiver pronto para concluir: [Limpar](https://dortania.github.io/Getting-Started-With-ACPI/cleanup.html)
